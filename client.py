@@ -9,7 +9,6 @@ Team Notify Client — 雙向通知客戶端
 當收到訊息時自動回覆確認，形成完整雙向迴路。
 """
 import subprocess, json, time, os, sys, argparse
-from urllib.parse import quote
 
 # ── 預設值 ──────────────────────────────────────────────
 DEFAULT_HUB = os.environ.get("HUB_URL", "http://192.168.20.154:8765")
@@ -76,7 +75,7 @@ def poll():
     """主輪詢迴圈"""
     global fail_count
     while True:
-        msgs = api_get(f"/poll/{quote(MACHINE, safe='')}")
+        msgs = api_get(f"/poll/{MACHINE}")
         if msgs is None:
             # 連線失敗
             fail_count += 1
@@ -101,9 +100,10 @@ def poll():
                 # 自動 Ack
                 api_post(f"/ack/{msg_id}", {})
 
-                # 自動回覆確認（避免無窮回覆：只回覆 CEO 的訊息）
-                if sender.upper() == "CEO":
-                    send("CEO", f"✅ 小p 已收到：{text[:80]}")
+                # 自動回覆確認（只在小p機器上執行：收到 CEO 的訊息才回）
+                # ❗ 不要在自己的機器（CEO）上做回覆，避免迴圈
+                if MACHINE != "CEO" and sender.upper() == "CEO":
+                    send("CEO", f"✅ {MACHINE} 已收到：{text[:80]}")
 
         time.sleep(INTERVALS[0])
 
