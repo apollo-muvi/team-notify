@@ -1,7 +1,7 @@
 # Team Notify — 跨機器團隊通知系統
 
-> 專案位置：`~/AI-jobflow/team-notify/`
-> GitHub：`apollo-muvi/AI-jobflow`
+> 專案位置：`~/AI-team-util/team-notify/`
+> GitHub：`apollo-muvi/AI-team-util`
 
 ---
 
